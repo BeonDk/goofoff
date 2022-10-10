@@ -6,3 +6,6 @@ file_list = os.listdir(path_dir)
 file_size = os.path.getsize(path_dir)
 
 print(file_size)
+print(os.getcwd())
+# aaaaa
+#fdsafdsa
