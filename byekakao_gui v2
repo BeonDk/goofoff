@@ -38,7 +38,7 @@ def del_file():
         list_file.delete(index)
     print(list_file.get(0, END))
 ### to-do_221010_삭제된 파일리스트까지는 완성되었고 전체 파일 경로를 넣어서 나중에 os를 활용하여 실제로 지울 파일들 목록을 따오는 것 준비
-
+# branch 생성함
 
 # 삭제하고자 하는 날짜 프레임
 
