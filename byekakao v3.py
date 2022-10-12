@@ -18,7 +18,7 @@ from datetime import datetime
 inputDate = datetime.strptime(str(input("날짜를 입력해 주세요. 입력한 날짜 이전의 파일을 검색하여 삭제하게 됩니다. (입력형식 : YYYYMMDD) : ")),f'%Y%m%d')
 folderfile_list = []
 folderfile_only = []
-
+print(type(folderfile_list))
 for (path, dir, files) in os.walk(path_dir):
     for filename in files:
         fileMtime = datetime.fromtimestamp(os.path.getmtime(path+'\\'+filename))

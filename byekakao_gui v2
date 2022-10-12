@@ -9,6 +9,9 @@ import send2trash
 # To-do list
 # 1. del_file 함수 적용될 때 삭제가 아니라 send2trash로 가는 옵션도 만들 것 (tkinter의 선택지 고르른 것에 적용하는 것 검토)
 
+windows_user_name = os.path.expanduser('~')
+path_dir = f'{windows_user_name}\\desktop\\test_folder'
+list_deleted = []
 
 root = Tk()
 root.title("Byekako")
@@ -36,9 +39,16 @@ def del_file():
     # print(list_file.curselection())
     for index in reversed(list_file.curselection()):
         list_file.delete(index)
-    print(list_file.get(0, END))
-### to-do_221010_삭제된 파일리스트까지는 완성되었고 전체 파일 경로를 넣어서 나중에 os를 활용하여 실제로 지울 파일들 목록을 따오는 것 준비
-# branch 생성함
+    #print(list_file.get(0, END))
+    list_deleted = list_file.get(0, END)
+    list(list_deleted)
+    #folderfile_only.append(list_file)
+    print(*list_deleted, sep='\n')
+
+## to-do_221010_삭제된 파일리스트까지는 완성되었고 전체 파일 경로를 넣어서 나중에 os를 활용하여 실제로 지울 파일들 목록을 따오는 것 준비
+### done_201012_listbox를 get으로 받아오는 함수가 tuple 형식이었는데 list로 바꿔주는 list(list_deleted)를 사용해서 해결
+
+
 
 # 삭제하고자 하는 날짜 프레임
 
@@ -161,7 +171,7 @@ list_file.pack(side="left", fill="both", expand=True)
 scrollbar.config(command=list_file.yview)
 
 btn_del_file = Button(file_frame, padx=5, pady=5, width=12, text="선택삭제", command=del_file)
-print(type(list_file))
+
 btn_del_file.pack(side="right")
 
 # 저장 경로 프레임
