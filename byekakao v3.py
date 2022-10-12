@@ -30,7 +30,7 @@ for (path, dir, files) in os.walk(path_dir):
             # a = ({path}+{filename})
             folderfile_only.append(path+'\\'+filename)
             folderfile_list.append(f'경로 : {path}, 파일명 : {filename}, 수정일자 : {fileMtime}')
-            # print(*folderfile_list, sep='\n')
+            print(*folderfile_list, sep='\n')
             # print(*folderfile_only, sep='\n')
         # else:
         #     print(f"{inputDate}보다 일찍 생성된 파일이 없습니다.")
