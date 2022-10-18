@@ -45,7 +45,7 @@ def del_file():
     list(list_deleted)
     list(path_dir)
     for A in list_deleted:
-        list_full.append(path_dir+'\\'+A) # list_deleted 횟수만큼 반복해줘야 할 듯
+        list_full.append(path_dir+'\\'+A)
     
     # for list_full in list_deleted:
     #     list_full = []
@@ -60,13 +60,12 @@ def del_file():
     print(type(list_full))
     print(*list_full, sep='\n')
 
-## to-do_221010_삭제된 파일리스트까지는 완성되었고 전체 파일 경로를 넣어서 나중에 os를 활용하여 실제로 지울 파일들 목록을 따오는 것 준비
-### done_201012_listbox를 get으로 받아오는 함수가 tuple 형식이었는데 list로 바꿔주는 list(list_deleted)를 사용해서 해결
-
-
+## 221010_to-do_삭제된 파일리스트까지는 완성되었고 전체 파일 경로를 넣어서 나중에 os를 활용하여 실제로 지울 파일들 목록을 따오는 것 준비
+### 221012_done_listbox를 get으로 받아오는 함수가 tuple 형식이었는데 list로 바꿔주는 list(list_deleted)를 사용해서 해결
 
 # 삭제하고자 하는 날짜 프레임
-### to-do_221012_> file_list를 파일 명만 불러 오는 것이 아니라 경로까지 같이 넣을 수 있는 방법
+## 221012_to-do_> file_list를 파일 명만 불러 오는 것이 아니라 경로까지 같이 넣을 수 있는 방법
+### 221012_done_for문으로 처리함
 windows_user_name = os.path.expanduser('~')
 path_dir = f'{windows_user_name}\\desktop\\test_folder'
 file_size = os.path.getsize(path_dir)
@@ -199,8 +198,11 @@ txt_dest_path = Entry(path_frame)
 txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # 높이 변경
 # get 값을 통해서 entry에 들어가있는 value를 value_txt_dest_path로 돌려줌
 value_txt_dest_path = txt_dest_path.get()
+print(type(value_txt_dest_path))
 V = str(value_txt_dest_path)
 
+## 221013_to-do_검색 버튼 눌렀을 때 더 날짜 숫자만큼 더 적은 파일리스트만 남기고 출력하는 명령
+## 221018_to-do_value_txt로 받은 값을 int값으로 정하고 (현재 날짜 - 기존 파일리스트 날짜 >= 받은 날짜 값)의 if문으로 진행할 것
 btn_dest_path = Button(path_frame, text="검색", width=10, command=browse_dest_path)
 btn_dest_path.pack(side="right", padx=5, pady=5)
 
