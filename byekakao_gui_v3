@@ -16,7 +16,7 @@ list_deleted = []
 list_deleted_full = []
 
 root = Tk()
-root.title("Byekako")
+root.title("Byekakao")
 
 # 파일 추가
 # def add_file():
@@ -37,33 +37,6 @@ root.title("Byekako")
 #         b = list_file.get(0, END)
 #     print(*b, sep='\n')
 
-def del_file():
-    # print(list_file.curselection())
-    for index in reversed(list_file.curselection()):
-        list_file.delete(index)
-    #print(list_file.get(0, END))
-    list_deleted = list_file.get(0, END)
-    list(list_deleted)
-    list(path_dir)
-    for A in list_deleted:
-        list_deleted_full.append(path_dir+'\\'+A)
-    # print(*list_deleted_full, sep='\n')
-    
-    # for list_deleted_full in list_deleted:
-    #     list_deleted_full = []
-    #     # print(type(list_deleted_full))
-    #     list(list_deleted)
-    #     # list_deleted_full = os.path.join(path_dir, list_deleted)
-    #     list_deleted_full.append(path_dir+'\\'+list_deleted)
-
-    #comparedfile.append(list_file)
-    # print(type(list_deleted))
-    # print(*list_deleted, sep='\n')
-    # print(type(list_deleted_full))
-    
-    ##### key : return값을 줘서 global 변수에 값을 반환해줘야 다른 함수에서도 사용가능함
-    return list_deleted_full
-
 ## 221010_to-do_삭제된 파일리스트까지는 완성되었고 전체 파일 경로를 넣어서 나중에 os를 활용하여 실제로 지울 파일들 목록을 따오는 것 준비
 ### 221012_done_listbox를 get으로 받아오는 함수가 tuple 형식이었는데 list로 바꿔주는 list(list_deleted)를 사용해서 해결
 
@@ -81,13 +54,7 @@ def delete_seleted():
     #     return
     
     # 파일 삭제를 누르지 않으면 파일 리스트를 받아오지 않기 때문에 함수 실행
-    print(*list_deleted, sep='\n')
     # print(*list_deleted_full, sep='\n')
-    if list_file == list_deleted_full:
-        del_file()
-    else:
-        pass
-
     # list_deleted = list_file.get(0, END)
     # list(list_deleted)
     # list(path_dir)
@@ -111,6 +78,11 @@ def delete_seleted():
     # print(type(today))
     # print(targetdate)
     # print(type(targetdate))
+    list_deleted = list_file.get(0, END)
+    list(list_deleted)
+    list(path_dir)
+    for A in list_deleted:
+        list_deleted_full.append(path_dir+'\\'+A)
     folderfile_list = []
     comparedfile = []
     # list_deleted_full의 getmtime을 inputDate와 비교해서 크기 설정
@@ -118,25 +90,61 @@ def delete_seleted():
 
     # 아래 잠시 pause
     # # # 정의해야 할 것은 입력받은 숫자 (예를 들어 90일...이면 현재 날짜 - 90일이 되어야 함)
+    
+    for (path, dir, files) in os.walk(path_dir):
+        for filename in files:
+            fileMtime = datetime.fromtimestamp(os.path.getmtime(path+'\\'+filename))
+            # print(int_input_date)
+            # print(fileMtime)
+            if int_input_date < fileMtime:
+                # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
+                # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
+                # a = ({path}+{filename})
+                folderfile_only.append(path+'\\'+filename)
+                folderfile_list.append(f'경로 : {path}, 파일명 : {filename}, 수정일자 : {fileMtime}')
+                print(*folderfile_list, sep='\n')
+                # print(*folderfile_only, sep='\n')
+            # else:
+            #     print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
+    if len(folderfile_only) == 0:
+        print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
+    else:
+        print(*folderfile_only, sep='\n')
+        while True:
+            YN = input("선택된 파일들을 휴지통으로 이동시키겠습니까? (Y/N)")
+            YN = YN.upper() # y/n 대소문자 아무거나 넣었을 때 일정한 값으로 입력시키기 위한 구문
+            
+            if YN == "Y" :
+                os.chdir(path_dir)
+                send2trash.send2trash(folderfile_only)
+                print("선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.")
+                break
+            elif YN == "N" :
+                print("프로그램을 종료합니다.")
+                break
+            else:
+                print("잘못된 값을 입력하였습니다. 다시 입력하여주세요.")
+    
+    
     # for gettime in range(len(list_deleted_full)):
-    # for xxx in range(len(list_deleted_full)):
-    #     for yyy in list_deleted_full:
-    #         # print(*list_deleted_full, sep='\n')
-    #         fileMtime = datetime.fromtimestamp(os.path.getmtime(yyy))
-    #         # print(gettime)
-    #         # print(fileMtime)
-    #         if (today - fileMtime) >= timedelta(days=int_input_date):
-    #             # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
-    #             # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
-    #             # a = ({path}+{filename})
-    #             comparedfile.append(yyy)
-    #             # comparedfile.append(path_dir +'\\'+ yyy)
-    #             # folderfile_list.append(f'경로 : {path}, 파일명 : {filename}, 수정일자 : {fileMtime}')
-    #             # print(*folderfile_list, sep='\n')
-    #         else:
-    #             print("일찍 생성된 파일이 없습니다.")
-    #             # print(f"{targetdate}보다 일찍 생성된 파일이 없습니다.")
-    # print(*comparedfile, sep='\n')
+    #     for xxx in range(len(list_deleted_full)):
+    #         for yyy in list_deleted_full:
+    #             # print(*list_deleted_full, sep='\n')
+    #             fileMtime = datetime.fromtimestamp(os.path.getmtime(yyy))
+    #             # print(gettime)
+    #             # print(fileMtime)
+    #             if (today - fileMtime) >= timedelta(days=int_input_date):
+    #                 # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
+    #                 # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
+    #                 # a = ({path}+{filename})
+    #                 comparedfile.append(yyy)
+    #                 # comparedfile.append(path_dir +'\\'+ yyy)
+    #                 # folderfile_list.append(f'경로 : {path}, 파일명 : {filename}, 수정일자 : {fileMtime}')
+    #                 # print(*folderfile_list, sep='\n')
+    #             else:
+    #                 print("일찍 생성된 파일이 없습니다.")
+    #                 # print(f"{targetdate}보다 일찍 생성된 파일이 없습니다.")
+    #     print(*comparedfile, sep='\n')
 
     # for gettime in range(len(list_deleted_full)):
     #     for xxx in list_deleted_full:
@@ -155,24 +163,24 @@ def delete_seleted():
     #             print(f"{targetdate}보다 일찍 생성된 파일이 없습니다.")
 
 # # 여기까지_221101_done : 일단 파일 리스트에서 필요한 파일 받아오는 것까지는 완성된 것 같음. 앞으로 할 내용은 Y/N control 박스 받아서 실제 살제하는 코드 추가할 것.
-#     if len(comparedfile) == 0:
-#         print(f"{targetdate}보다 일찍 생성된 파일이 없습니다.")
-#     else:
-#         print(*comparedfile, sep='\n')
-#         while True:
-#             YN = input("선택된 파일들을 휴지통으로 이동시키겠습니까? (Y/N)")
-#             YN = YN.upper() # y/n 대소문자 아무거나 넣었을 때 일정한 값으로 입력시키기 위한 구문
+    # if len(comparedfile) == 0:
+    #     print(f"{targetdate}보다 일찍 생성된 파일이 없습니다.")
+    # else:
+    #     print(*comparedfile, sep='\n')
+    #     while True:
+    #         YN = input("선택된 파일들을 휴지통으로 이동시키겠습니까? (Y/N)")
+    #         YN = YN.upper() # y/n 대소문자 아무거나 넣었을 때 일정한 값으로 입력시키기 위한 구문
             
-#             if YN == "Y" :
-#                 os.chdir(path_dir)
-#                 send2trash.send2trash(comparedfile)
-#                 print("선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.")
-#                 break
-#             elif YN == "N" :
-#                 print("프로그램을 종료합니다.")
-#                 break
-#             else:
-#                 print("잘못된 값을 입력하였습니다. 다시 입력하여주세요.")
+    #         if YN == "Y" :
+    #             os.chdir(path_dir)
+    #             send2trash.send2trash(comparedfile)
+    #             print("선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.")
+    #             break
+    #         elif YN == "N" :
+    #             print("프로그램을 종료합니다.")
+    #             break
+    #         else:
+    #             print("잘못된 값을 입력하였습니다. 다시 입력하여주세요.")
 
     # 아래는 타입 테스트용 프린트
     # print(type(targetdate))
@@ -184,25 +192,6 @@ def delete_seleted():
     # txt_dest_path.delete(0,END)
     # txt_dest_path.insert(0, folder_selected)
     
-# 시작
-def start():
-    # 각 옵션들 값을 확인
-    print("가로넓이 : ", cmb_width.get())
-    print("간격 : ", cmb_space.get())
-    print("포맷 : ", cmb_format.get())
-
-    # 파일 목록 확인
-    if list_file.size() == 0:
-        msgbox.showwarning("경고", "이미지 파일을 추가하세요")
-        return
-
-    # 저장 경로 확인
-    # if len(txt_dest_path.get()) == 0:
-    #     msgbox.showwarning("경고", "저장 경로를 선택하세요")
-    #     return
-
-    # 이미지 통합 작업
-    # merge_image()
 
 # 정한 폴더 파일 사이즈 구하기
 windows_user_name = os.path.expanduser('~')
@@ -221,8 +210,6 @@ file_frame.pack(fill="x", padx=5, pady=5) # 간격 띄우기
 
 main_label = Label(file_frame, text=f'{file_size}kb의 용량이 사용되고 있습니다.')
 main_label.pack(side="left", padx=5, pady=5)
-
-
 
 # 리스트 프레임
 list_frame = Frame(root)
@@ -243,9 +230,6 @@ for i in range(len(file_list)):
 list_file.pack(side="left", fill="both", expand=True)
 scrollbar.config(command=list_file.yview)
 
-btn_del_file = Button(file_frame, padx=5, pady=5, width=12, text="선택삭제", command=del_file)
-
-btn_del_file.pack(side="right")
 
 # 삭제 원하는 날짜 입력 프레임
 ### to-do 1. Button command 변경이 필요함 > 찾아보기에서 파일 검색 후 목록으로 보여주는 함수로 변경 (delete_seleted)
@@ -266,42 +250,7 @@ input_date.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # �
 btn_dest_path = Button(delete_date, text="검색", width=10, command=delete_seleted)
 btn_dest_path.pack(side="right", padx=5, pady=5)
 
-# 옵션 프레임
-frame_option = LabelFrame(root, text="옵션")
-frame_option.pack(padx=5, pady=5, ipady=5)
 
-# 1. 가로 넓이 옵션
-# 가로 넓이 레이블
-lbl_width = Label(frame_option, text="가로넓이", width=8)
-lbl_width.pack(side="left", padx=5, pady=5)
-
-# 가로 넓이 콤보
-opt_width = ["원본유지", "1024", "800", "640"]
-cmb_width = ttk.Combobox(frame_option, state="readonly", values=opt_width, width=10)
-cmb_width.current(0)
-cmb_width.pack(side="left", padx=5, pady=5)
-
-# 2. 간격 옵션
-# 간격 옵션 레이블
-lbl_space = Label(frame_option, text="간격", width=8)
-lbl_space.pack(side="left", padx=5, pady=5)
-
-# 간격 옵션 콤보
-opt_space = ["없음", "좁게", "보통", "넓게"]
-cmb_space = ttk.Combobox(frame_option, state="readonly", values=opt_space, width=10)
-cmb_space.current(0)
-cmb_space.pack(side="left", padx=5, pady=5)
-
-# 3. 파일 포맷 옵션
-# 파일 포맷 옵션 레이블
-lbl_format = Label(frame_option, text="포맷", width=8)
-lbl_format.pack(side="left", padx=5, pady=5)
-
-# 파일 포맷 옵션 콤보
-opt_format = ["PNG", "JPG", "BMP"]
-cmb_format = ttk.Combobox(frame_option, state="readonly", values=opt_format, width=10)
-cmb_format.current(0)
-cmb_format.pack(side="left", padx=5, pady=5)
 
 # 진행 상황 Progress Bar
 frame_progress = LabelFrame(root, text="진행상황")
@@ -318,8 +267,6 @@ frame_run.pack(fill="x", padx=5, pady=5)
 btn_close = Button(frame_run, padx=5, pady=5, text="닫기", width=12, command=root.quit)
 btn_close.pack(side="right", padx=5, pady=5)
 
-btn_start = Button(frame_run, padx=5, pady=5, text="시작", width=12, command=start)
-btn_start.pack(side="right", padx=5, pady=5)
 
 root.resizable(False, False)
 root.mainloop()
