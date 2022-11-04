@@ -70,7 +70,7 @@ def delete_seleted():
     # targetdate = datetime.strptime(input_date.get(), f'%Y%m%d')
     
     # 중요Point 아래 timedelta쓰는 방식 잘 기억해둘 것
-    int_input_date = int(input_date.get())
+    int_input_date = inputDate = datetime.strptime(input_date.get() ,f'%Y%m%d')
     today = datetime.today()
     # targetdate = today - timedelta(days=int_input_date)
     
@@ -91,32 +91,31 @@ def delete_seleted():
     # 아래 잠시 pause
     # # # 정의해야 할 것은 입력받은 숫자 (예를 들어 90일...이면 현재 날짜 - 90일이 되어야 함)
     
-    for (path, dir, files) in os.walk(path_dir):
-        for filename in files:
-            fileMtime = datetime.fromtimestamp(os.path.getmtime(path+'\\'+filename))
-            # print(int_input_date)
-            # print(fileMtime)
-            if int_input_date < fileMtime:
-                # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
-                # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
-                # a = ({path}+{filename})
-                folderfile_only.append(path+'\\'+filename)
-                folderfile_list.append(f'경로 : {path}, 파일명 : {filename}, 수정일자 : {fileMtime}')
-                print(*folderfile_list, sep='\n')
-                # print(*folderfile_only, sep='\n')
-            # else:
-            #     print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
-    if len(folderfile_only) == 0:
+    for filename in list_deleted_full:
+        fileMtime = datetime.fromtimestamp(os.path.getmtime(filename))
+        # print(int_input_date)
+        # print(fileMtime)
+        if int_input_date < fileMtime:
+            # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
+            # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
+            # a = ({path}+{filename})
+            comparedfile.append(filename)
+            folderfile_list.append(f'경로, 파일명 : {filename}, 수정일자 : {fileMtime}')
+            print(*folderfile_list, sep='\n')
+            # print(*comparedfile, sep='\n')
+        # else:
+        #     print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
+    if len(comparedfile) == 0:
         print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
     else:
-        print(*folderfile_only, sep='\n')
+        print(*comparedfile, sep='\n')
         while True:
             YN = input("선택된 파일들을 휴지통으로 이동시키겠습니까? (Y/N)")
             YN = YN.upper() # y/n 대소문자 아무거나 넣었을 때 일정한 값으로 입력시키기 위한 구문
             
             if YN == "Y" :
                 os.chdir(path_dir)
-                send2trash.send2trash(folderfile_only)
+                send2trash.send2trash(comparedfile)
                 print("선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.")
                 break
             elif YN == "N" :
