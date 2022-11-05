@@ -48,32 +48,76 @@ root.title("Byekakao")
 # file_size = os.path.getsize(path_dir)
 # file_list = os.listdir(path_dir)
 
+def error():
+    msgbox.showerror("에러", '잘못된 날짜를 입력하였습니다. 입력형식 : "YYYYMMDD" 으로 다시 입력해주세요.')
+
+def yesorno():
+    yesorno = msgbox.askokcancel("확인", "선택하신 날짜 이전의 파일이 모두 삭제됩니다. 정말 삭제하시겠습니까?")
+    if yesorno == True:
+        list_deleted = list_file.get(0, END)
+        list(list_deleted)
+        list(path_dir)
+        for A in list_deleted:
+            list_deleted_full.append(path_dir+'\\'+A)
+        folderfile_list = []
+        comparedfile = []
+        # list_deleted_full의 getmtime을 inputDate와 비교해서 크기 설정
+        # print(list_deleted_full)
+
+        # 아래 잠시 pause
+        # # # 정의해야 할 것은 입력받은 숫자 (예를 들어 90일...이면 현재 날짜 - 90일이 되어야 함)
+        
+        for filename in list_deleted_full:
+            fileMtime = datetime.fromtimestamp(os.path.getmtime(filename))
+            # print(int_input_date)
+            # print(fileMtime)
+            
+            if int_input_date > fileMtime:
+                # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
+                # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
+                # a = ({path}+{filename})
+                comparedfile.append(filename)
+                folderfile_list.append(f'경로, 파일명 : {filename}, 수정일자 : {fileMtime}')
+                # print(*folderfile_list, sep='\n')
+                # print(*comparedfile, sep='\n')
+            # else:
+            #     print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
+        if len(comparedfile) == 0:
+            print(f"입력한 날짜보다 일찍 생성된 파일이 없습니다.")
+        else:
+            print(*comparedfile, sep='\n')
+            while True:
+                YN = input("선택된 파일들을 휴지통으로 이동시키겠습니까? (Y/N)")
+                YN = YN.upper() # y/n 대소문자 아무거나 넣었을 때 일정한 값으로 입력시키기 위한 구문
+                
+                if YN == "Y" :
+                    os.chdir(path_dir)
+                    send2trash.send2trash(comparedfile)
+                    print("선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.")
+                    break
+                elif YN == "N" :
+                    print("프로그램을 종료합니다.")
+                    break
+                else:
+                    print("잘못된 값을 입력하였습니다. 다시 입력하여주세요.")
+    else:
+        print("프로그램을 완전히 종료합니다.")
+
+
 def delete_seleted():
     # folder_selected = filedialog.askdirectory()
     # if folder_selected == "": # 사용자가 취소를 누를 때
     #     return
-    
-    # 파일 삭제를 누르지 않으면 파일 리스트를 받아오지 않기 때문에 함수 실행
-    # print(*list_deleted_full, sep='\n')
-    # list_deleted = list_file.get(0, END)
-    # list(list_deleted)
-    # list(path_dir)
-    # print(list_deleted)
-    # for A in list_deleted:
-    #     list_deleted_full.append(path_dir+'\\'+A)
-    # print(*list_deleted_full, sep='\n')
-    # input_date에는 창에서 받은 date, inputDate는 input_date로 받은 숫자 데이터를 날짜 형식으로 받음
-    # get_inputdate = input_date.get()
-    # print(get_inputdate)
-    # 221101_done inputDate에는 현재 2022-05-05 00:00:00 형식으로 날짜가 들어감
-    
-    # targetdate = datetime.strptime(input_date.get(), f'%Y%m%d')
-    
-    # 중요Point 아래 timedelta쓰는 방식 잘 기억해둘 것
-    int_input_date = inputDate = datetime.strptime(input_date.get() ,f'%Y%m%d')
+    try:
+        int_input_date = datetime.strptime(input_date.get() ,f'%Y%m%d')
+        yesorno()
+    except:
+        error()
+
     today = datetime.today()
-    # targetdate = today - timedelta(days=int_input_date)
     
+    
+    # targetdate = today - timedelta(days=int_input_date)
     # print(today)
     # print(type(today))
     # print(targetdate)
@@ -95,18 +139,19 @@ def delete_seleted():
         fileMtime = datetime.fromtimestamp(os.path.getmtime(filename))
         # print(int_input_date)
         # print(fileMtime)
-        if int_input_date < fileMtime:
+        
+        if int_input_date > fileMtime:
             # print('경로 : [%s], 파일명 : [%s], 수정일자 : [%s]' %(path,filename,fileMtime))
             # print(f'{path} {filename} {fileMtime}') # 온전히 파일 이름만 입력
             # a = ({path}+{filename})
             comparedfile.append(filename)
             folderfile_list.append(f'경로, 파일명 : {filename}, 수정일자 : {fileMtime}')
-            print(*folderfile_list, sep='\n')
+            # print(*folderfile_list, sep='\n')
             # print(*comparedfile, sep='\n')
         # else:
         #     print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
     if len(comparedfile) == 0:
-        print(f"{int_input_date}보다 일찍 생성된 파일이 없습니다.")
+        print(f"입력한 날짜보다 일찍 생성된 파일이 없습니다.")
     else:
         print(*comparedfile, sep='\n')
         while True:
@@ -246,8 +291,8 @@ input_date.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # �
 
 ## 221013_to-do_검색 버튼 눌렀을 때 더 날짜 숫자만큼 더 적은 파일리스트만 남기고 출력하는 명령
 ## 221018_to-do_value_txt로 받은 값을 int값으로 정하고 (현재 날짜 - 기존 파일리스트 날짜 >= 받은 날짜 값)의 if문으로 진행할 것
-btn_dest_path = Button(delete_date, text="검색", width=10, command=delete_seleted)
-btn_dest_path.pack(side="right", padx=5, pady=5)
+findfile = Button(delete_date, text="삭제", width=10, command=delete_seleted)
+findfile.pack(side="right", padx=5, pady=5)
 
 
 
