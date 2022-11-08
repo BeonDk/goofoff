@@ -9,14 +9,14 @@ import tkinter.messagebox as msgbox
 from tkinter import * # __all__
 from tkinter import filedialog
 from datetime import datetime, timedelta
-from webbrowser import get
+# from webbrowser import get
 import send2trash
 
 # To-do list
 # 1. del_file 함수 적용될 때 삭제가 아니라 send2trash로 가는 옵션도 만들 것 (tkinter의 선택지 고르른 것에 적용하는 것 검토)
 
 windows_user_name = os.path.expanduser('~')
-path_dir = f'{windows_user_name}\\desktop\\test_folder'
+# path_dir = f'{windows_user_name}\\desktop\\test_folder'
 list_deleted = []
 list_deleted_full = []
 
@@ -48,21 +48,29 @@ root.title("Byekakao")
 # 삭제하고자 하는 날짜 프레임
 ## 221012_to-do_> file_list를 파일 명만 불러 오는 것이 아니라 경로까지 같이 넣을 수 있는 방법
 ### 221012_done_for문으로 처리함
-# windows_user_name = os.path.expanduser('~')
-# path_dir = f'{windows_user_name}\\desktop\\test_folder'
+windows_user_name = os.path.expanduser('~')
+path_dir = f'{windows_user_name}\\AppData\\Local\\Kakao\\KakaoTalk\\users'
 # file_size = os.path.getsize(path_dir)
 # file_list = os.listdir(path_dir)
 
+
+original_filelist = []
+
+for (path, dir, files) in os.walk(path_dir):
+        for file in files:
+            file_path = os.path.join(path, file)
+            original_filelist.append(file_path)
+
 # 파일사이즈 convert
-def convert_size(size_bytes):
-    import math
-    if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    p = math.pow(1024, i)
-    s = round(size_bytes / p, 2)
-    return "%s %s" % (s, size_name[i])
+# def convert_size(size_bytes):
+#     import math
+#     if size_bytes == 0:
+#         return "0B"
+#     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+#     i = int(math.floor(math.log(size_bytes, 1024)))
+#     p = math.pow(1024, i)
+#     s = round(size_bytes / p, 2)
+#     return "%s %s" % (s, size_name[i])
 
 def error():
     msgbox.showerror("에러", '잘못된 날짜를 입력하였습니다. 입력형식 : "YYYYMMDD" 으로 다시 입력해주세요.')
@@ -71,11 +79,11 @@ def yesorno():
     yesorno = msgbox.askokcancel("확인", "선택하신 날짜 이전의 파일이 모두 삭제됩니다. 정말 삭제하시겠습니까?")
     
     if yesorno == 1:
-        list_deleted = list_file.get(0, END)
-        list(list_deleted)
-        list(path_dir)
-        for A in list_deleted:
-            list_deleted_full.append(path_dir+'\\'+A)
+        # list_deleted = list_file.get(0, END)
+        # list(list_deleted)
+        # list(path_dir)
+        # for A in list_deleted:
+        #     list_deleted_full.append(path_dir+'\\'+A)
         
         # list_deleted_full의 getmtime을 inputDate와 비교해서 크기 설정
         # print(list_deleted_full)
@@ -84,7 +92,7 @@ def yesorno():
         # # # 정의해야 할 것은 입력받은 숫자 (예를 들어 90일...이면 현재 날짜 - 90일이 되어야 함)
         int_input_date = datetime.strptime(input_date.get() ,f'%Y%m%d')
         comparedfile = []
-        for filename in list_deleted_full:
+        for filename in original_filelist:
             fileMtime = datetime.fromtimestamp(os.path.getmtime(filename))
             # print(int_input_date)
             # print(fileMtime)
@@ -117,15 +125,15 @@ def yesorno():
         else:
             # print(*comparedfile, sep='\n')
             os.chdir(path_dir)
-            totalsize = 0
-            for i in comparedfile:
+            # totalsize = 0
+            # for i in comparedfile:
                 
-                file_size = os.path.getsize(i)
-                totalsize += file_size + totalsize
-            converted_size = convert_size(totalsize)
+            #     file_size = os.path.getsize(i)
+            #     totalsize += file_size + totalsize
+            # converted_size = convert_size(totalsize)
 
             send2trash.send2trash(comparedfile)
-            msgbox.showinfo("완료", f'{converted_size}선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.')
+            msgbox.showinfo("완료", '선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.')
             # print("선택한 파일이 모두 휴지통으로 이동되었습니다. 복구하고 싶으면 휴지통에서 복구 하세요.")
     # else:
     #     print("프로그램을 완전히 종료합니다.")
@@ -270,41 +278,41 @@ def delete_seleted():
     
 
 # 정한 폴더 파일 사이즈 구하기
-windows_user_name = os.path.expanduser('~')
-path_dir = f'{windows_user_name}\\desktop\\test_folder'
-file_list = os.listdir(path_dir)
-file_size = os.path.getsize(path_dir)
+# windows_user_name = os.path.expanduser('~')
+# path_dir = f'{windows_user_name}\\desktop\\test_folder'
+# file_list = os.listdir(path_dir)
+# file_size = os.path.getsize(path_dir)
 
 
 # 파일 프레임 (파일 추가, 선택 삭제)
-file_frame = Frame(root)
-file_frame.pack(fill="x", padx=5, pady=5) # 간격 띄우기
+# file_frame = Frame(root)
+# file_frame.pack(fill="x", padx=5, pady=5) # 간격 띄우기
 
 # btn_add_file = Button(file_frame, padx=5, pady=5, width=12, text="파일추가", command=add_file)
 # btn_add_file.pack(side="left")
 # file_frame.insert(0, f'{file_size}kb의 용량이 사용되고 있습니다.')
 
-main_label = Label(file_frame, text=f'{file_size}kb의 용량이 사용되고 있습니다.')
-main_label.pack(side="left", padx=5, pady=5)
+# main_label = Label(file_frame, text=f'{file_size}kb의 용량이 사용되고 있습니다.')
+# main_label.pack(side="left", padx=5, pady=5)
 
 # 리스트 프레임
-list_frame = Frame(root)
-list_frame.pack(fill="both", padx=5, pady=5)
+# list_frame = Frame(root)
+# list_frame.pack(fill="both", padx=5, pady=5)
 
-scrollbar = Scrollbar(list_frame)
-scrollbar.pack(side="right", fill="y")
+# scrollbar = Scrollbar(list_frame)
+# scrollbar.pack(side="right", fill="y")
 
-list_file = Listbox(list_frame, selectmode="extended", height=15, yscrollcommand=scrollbar.set)
+# list_file = Listbox(list_frame, selectmode="extended", height=15, yscrollcommand=scrollbar.set)
 
 ### to-do_done. list_file 자체에 default 값으로 카카오톡 폴더의 총 파일 사이즈를 가지고 와야함 > 카카오톡 지울 폴더의 총 파일 사이즈 함수 정의
 
 # tip. 해당 내용은 별도의 현재 상태표시 프레임으로 넣을 것 list_file.insert(0, f'{file_size}kb의 용량이 사용되고 있습니다.')
 # tip. 아래는 지정된 리스트 프레임에 파일 리스트(path_dir = user\\desktop\\test_foler)를 하나씩 넣어주는 것
-for i in range(len(file_list)):
-    list_file.insert(END, file_list[i])
+# for i in range(len(file_list)):
+#     list_file.insert(END, file_list[i])
 
-list_file.pack(side="left", fill="both", expand=True)
-scrollbar.config(command=list_file.yview)
+# list_file.pack(side="left", fill="both", expand=True)
+# scrollbar.config(command=list_file.yview)
 
 
 # 삭제 원하는 날짜 입력 프레임
@@ -329,19 +337,19 @@ findfile.pack(side="right", padx=5, pady=5)
 
 
 # 진행 상황 Progress Bar
-frame_progress = LabelFrame(root, text="진행상황")
-frame_progress.pack(fill="x", padx=5, pady=5, ipady=5)
+# frame_progress = LabelFrame(root, text="진행상황")
+# frame_progress.pack(fill="x", padx=5, pady=5, ipady=5)
 
-p_var = DoubleVar()
-progress_bar = ttk.Progressbar(frame_progress, maximum=100, variable=p_var)
-progress_bar.pack(fill="x", padx=5, pady=5)
+# p_var = DoubleVar()
+# progress_bar = ttk.Progressbar(frame_progress, maximum=100, variable=p_var)
+# progress_bar.pack(fill="x", padx=5, pady=5)
 
 # 실행 프레임
-frame_run = Frame(root)
-frame_run.pack(fill="x", padx=5, pady=5)
+# frame_run = Frame(root)
+# frame_run.pack(fill="x", padx=5, pady=5)
 
-btn_close = Button(frame_run, padx=5, pady=5, text="닫기", width=12, command=root.quit)
-btn_close.pack(side="right", padx=5, pady=5)
+# btn_close = Button(frame_run, padx=5, pady=5, text="닫기", width=12, command=root.quit)
+# btn_close.pack(side="right", padx=5, pady=5)
 
 
 root.resizable(False, False)
