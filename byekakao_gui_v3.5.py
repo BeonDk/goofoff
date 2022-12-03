@@ -4,8 +4,6 @@
 # 3. 루피 얼굴 적용
 
 import os
-from pathlib import Path
-import glob
 import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 from tkinter import * # __all__
@@ -57,42 +55,11 @@ path_dir = f'{windows_user_name}\\AppData\\Local\\Kakao\\KakaoTalk\\users'
 
 
 original_filelist = []
-only_cng = []
 
-# 원본 작동하는거
-# for (path, dir, files) in os.walk(path_dir):
-#         for file in files:
-#             file_path = os.path.join(path, file)
-#             original_filelist.append(file_path)
 for (path, dir, files) in os.walk(path_dir):
         for file in files:
             file_path = os.path.join(path, file)
             original_filelist.append(file_path)
-
-# 11/20_진행중 작동된거 같은데?
-for folder, _, files in os.walk(path_dir):
-    for file in files:
-        if ".cng" in file:
-            only_cng.append(folder + "/" + file)
-
-print(type(only_cng))
-print(len(only_cng))
-print(len(original_filelist))
-
-
-# for file in os.listdir(path_dir):
-#     d = os.path.join(path_dir, file)
-#     if os.path.isdir(d):
-#         # print(d)
-
-# print(*original_filelist, sep='\n')
-# print(len(original_filelist))
-
-# targetPattern = f'{path_dir}\\**\\**\\**\\*.cng'
-# only_cng = glob.glob(targetPattern)
-# print(only_cng)
-# print(len(only_cng))
-
 
 # 파일사이즈 convert
 # def convert_size(size_bytes):
@@ -177,7 +144,7 @@ def delete_seleted():
     # if folder_selected == "": # 사용자가 취소를 누를 때
     #     return
     try:
-        # int_input_date = datetime.strptime(input_date.get() ,f'%Y%m%d')
+        int_input_date = datetime.strptime(input_date.get() ,f'%Y%m%d')
         yesorno()
 
     except:
